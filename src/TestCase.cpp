@@ -1,9 +1,9 @@
 #include "TestCase.hpp"
 
-TestCase::TestCase(std::string name, std::ostream& error)
+TestCase::TestCase(std::string name, std::ostream& write)
 {
     this->name = name;
-    this->error = &error;
+    this->write = &write;
     this->numPassed = 0;
     this->numFailed = 0;
 }

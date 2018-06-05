@@ -22,32 +22,32 @@ public:
 
     // Constructor
 
-    TestCase(std::string name, std::ostream& error);
+    TestCase(std::string name, std::ostream& write);
 
     // Functions tester
+
+    // about the no possibility of the implementation of these functions in the cpp file.
+    // https://stackoverflow.com/questions/36039/templates-spread-across-multiple-files
 
     template <typename T>
     TestCase& check_equal(const T& a, const T& b)
     {
-        try
-        {
-            a == b;
+        if (a == b)
             numPassed++;
-        }
-        catch(...)
+        else
         {
             numFailed++;
-            std::cerr
+            *write
                     << name
                     << ": Failure in test #"
                     << numPassed + numFailed
                     << ": Function should return "
                     << a
-                    << "=="
+                    << " == "
                     << b
                     << " but returned "
                     << a
-                    << "!="
+                    << " != "
                     << b
                     << "!"
                     << endl;
@@ -58,26 +58,46 @@ public:
     template <typename T>
     TestCase& check_different(const T& a, const T& b)
     {
-        try
-        {
-            a != b;
+        if (a != b)
             numPassed++;
-        }
-        catch(...)
+        else
         {
             numFailed++;
-            *error
+            *write
                     << name
                     << ": Failure in test #"
                     << numPassed + numFailed
                     << ": Function should return "
                     << a
-                    << "!="
+                    << " != "
                     << b
                     << " but returned "
                     << a
-                    << "=="
+                    << " == "
                     << b
+                    << "!"
+                    << endl;
+        }
+        return *this;
+    }
+
+    template <typename T, typename U>
+    TestCase& check_function(int (*fun) (U), const U& a, const T& b)
+    {
+        int temp = fun(a);
+        if (b == temp)
+            numPassed++;
+        else
+        {
+            numFailed++;
+            *write
+                    << name
+                    << ": Failure in test #"
+                    << numPassed + numFailed
+                    << ": Function should return "
+                    << b
+                    << " but returned "
+                    << temp
                     << "!"
                     << endl;
         }
@@ -85,34 +105,31 @@ public:
     }
 
     template <typename T>
-    TestCase& check_function(const T& a, const T& b)
+    TestCase& check_output(const T& a, std::string b)
     {
-        try
-        {
-            a != b;
+
+        std::ostream *temp;
+        temp = &(cout << a);
+
+       /* if (temp == b)
             numPassed++;
-        }
-        catch(...)
+        else
         {
             numFailed++;
-            *error
+            *write
                     << name
                     << ": Failure in test #"
                     << numPassed + numFailed
                     << ": Function should return "
-                    << a
-                    << "!="
                     << b
                     << " but returned "
-                    << a
-                    << "=="
-                    << b
+                    << ss.str()
                     << "!"
                     << endl;
         }
+        */
         return *this;
     }
-
     void print();
 
 protected:
@@ -123,7 +140,7 @@ private:
 
     int numPassed, numFailed;
     std::string name;
-    std::ostream* error;
+    std::ostream* write;
 };
 
 #endif // TESTCASE_H
