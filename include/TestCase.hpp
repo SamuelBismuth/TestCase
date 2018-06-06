@@ -30,9 +30,9 @@ public:
     // https://stackoverflow.com/questions/36039/templates-spread-across-multiple-files
 
     template <typename T>
-    TestCase& check_equal(const T& a, const T& b)
+    TestCase& check_equal(const T &a, const T &b)
     {
-        if (a == b)
+        if((T) a == (T) b)
             numPassed++;
         else
         {
@@ -41,13 +41,9 @@ public:
                     << name
                     << ": Failure in test #"
                     << numPassed + numFailed
-                    << ": Function should return "
+                    << ": "
                     << a
-                    << " == "
-                    << b
-                    << " but returned "
-                    << a
-                    << " != "
+                    << " should equal "
                     << b
                     << "!"
                     << endl;
@@ -56,24 +52,20 @@ public:
     }
 
     template <typename T>
-    TestCase& check_different(const T& a, const T& b)
+    TestCase& check_different(const T &a, const T &b)
     {
-        if (a != b)
+        if((T)a != (T)b)
             numPassed++;
         else
         {
             numFailed++;
             *write
-                    << name
+                     << name
                     << ": Failure in test #"
                     << numPassed + numFailed
-                    << ": Function should return "
+                    << ": "
                     << a
-                    << " != "
-                    << b
-                    << " but returned "
-                    << a
-                    << " == "
+                    << " should not equal "
                     << b
                     << "!"
                     << endl;
@@ -81,8 +73,8 @@ public:
         return *this;
     }
 
-    template <typename T, typename U>
-    TestCase& check_function(int (*fun) (U), const U& a, const T& b)
+    template <typename T, typename U, typename V>
+    TestCase& check_function(int (*fun) (T), const U& a, const V& b)
     {
         int temp = fun(a);
         if (b == temp)
@@ -104,14 +96,14 @@ public:
         return *this;
     }
 
+    /**Test MyStruct operators: Failure in test #3: string value should be MyStruct(5) but is MyStrct(5)*/
+    /** There is no "!" */
     template <typename T>
     TestCase& check_output(const T& a, std::string b)
     {
-
-        std::ostream *temp;
-        temp = &(cout << a);
-
-       /* if (temp == b)
+        std::ostringstream os;
+        os << a;
+        if (os.str() == b)
             numPassed++;
         else
         {
@@ -120,16 +112,15 @@ public:
                     << name
                     << ": Failure in test #"
                     << numPassed + numFailed
-                    << ": Function should return "
+                    << ": string value should be "
                     << b
-                    << " but returned "
-                    << ss.str()
-                    << "!"
+                    << " but is "
+                    << os.str()
                     << endl;
         }
-        */
         return *this;
     }
+
     void print();
 
 protected:
