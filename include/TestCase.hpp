@@ -74,7 +74,7 @@ public:
     }
 
     template <typename T, typename U, typename V>
-    TestCase& check_function(int (*fun) (T), const U& a, const V& b)
+    TestCase& check_function(T fun, const U& a, const V& b)
     {
         int temp = fun(a);
         if (b == temp)
